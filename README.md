@@ -6,7 +6,7 @@ This project implements and compares three neural network architectures for clas
 
 ## **Dataset**
 
-- **Dataset**: [FashionMNIST](https://github.com/user-attachments/assets/523d9f0d-1383-477e-8c9c-614c0c1e83bd), a collection of 28x28 grayscale images of 10 clothing categories.
+- **Dataset**: [FashionMNIST](https://github.com/zalandoresearch/fashion-mnist), a collection of 28x28 grayscale images of 10 clothing categories.
 - **Classes**: `['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']`
 <p float="left" style="text-align: center; margin-right: 10px;">
   <img src="https://github.com/user-attachments/assets/d59de12b-775f-4232-abab-4596978b8ec1" width="55%" />
