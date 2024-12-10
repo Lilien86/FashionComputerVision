@@ -11,7 +11,7 @@ This project implements and compares three neural network architectures for clas
 <p float="left" style="text-align: center; margin-right: 10px;">
   <img src="https://github.com/user-attachments/assets/d59de12b-775f-4232-abab-4596978b8ec1" width="55%" />
   <br />
-  <strong>Figure 1: data used</strong>
+  <strong>Data used</strong>
 </p>
 
 ---
@@ -64,7 +64,7 @@ This project implements and compares three neural network architectures for clas
 <p float="left" style="text-align: center; margin-right: 10px;">
   <img src="https://github.com/user-attachments/assets/da10679e-3944-43b6-8139-985b60028f92" width="55%" />
   <br />
-  <strong>Figure 1: model performances</strong>
+  <strong>Model performances</strong>
 </p>
 
 - **Model 2 outperforms others** due to its convolutional architecture.
@@ -72,7 +72,7 @@ This project implements and compares three neural network architectures for clas
 <p float="left" style="text-align: center; margin-right: 10px;">
   <img src="https://github.com/user-attachments/assets/918a0ed3-8b11-4626-b177-6ab46953ca97" width="55%" />
   <br />
-  <strong>Figure 1: output pre-trained model</strong>
+  <strong>Output pre-trained model</strong>
 </p>
 
 ---
