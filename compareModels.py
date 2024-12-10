@@ -10,6 +10,7 @@ from helper_functions import print_train_time
 from timeit import default_timer as timer
 
 from tqdm.auto import tqdm
+import pandas as pd
 
 from torchvision import datasets
 from torchvision.transforms import ToTensor
@@ -246,6 +247,15 @@ for epoch in tqdm(range(epochs)):
         accuracy_fn=accuracy_fn
     )
 
+total_train_time_model_0 = print_train_time(start=train_time_start_on_cpu, 
+                                           end=timer(),
+                                           device="cpu")
+model_0_results = eval_model(model=model_0, data_loader=test_dataloader,
+    loss_fn=loss_fn, accuracy_fn=accuracy_fn,
+    device=device
+)
+train_time_start_on_cpu = timer()
+
 for epoch in tqdm(range(epochs)):
     print(f"Epoch: {epoch}\n---------")
     train_step(data_loader=train_dataloader, 
@@ -259,6 +269,15 @@ for epoch in tqdm(range(epochs)):
         loss_fn=loss_fn,
         accuracy_fn=accuracy_fn
     )
+
+total_train_time_model_1 = print_train_time(start=train_time_start_on_cpu, 
+                                           end=timer(),
+                                           device="cpu")
+model_1_results = eval_model(model=model_1, data_loader=test_dataloader,
+    loss_fn=loss_fn, accuracy_fn=accuracy_fn,
+    device=device
+)
+train_time_start_on_cpu = timer()
 
 for epoch in tqdm(range(epochs)):
     print(f"Epoch: {epoch}\n---------")
@@ -274,13 +293,21 @@ for epoch in tqdm(range(epochs)):
         accuracy_fn=accuracy_fn
     )
 
-train_time_end_on_cpu = timer()
 total_train_time_model_2 = print_train_time(start=train_time_start_on_cpu, 
-                                           end=train_time_end_on_cpu,
+                                           end=timer(),
                                            device=str(next(model_2.parameters()).device))
-
 model_2_results = eval_model(model=model_2, data_loader=test_dataloader,
     loss_fn=loss_fn, accuracy_fn=accuracy_fn,
     device=device
 )
-print(model_2_results)
+
+compare_results = pd.DataFrame([model_0_results, model_1_results, model_2_results])
+print(compare_results)
+
+compare_results["training_time"] = [total_train_time_model_0, total_train_time_model_1, total_train_time_model_2]
+print(compare_results)
+
+compare_results.set_index("model_name")["model_acc"].plot(kind="barh")
+plt.xlabel("accuracy (%)")
+plt.ylabel("model")
+plt.show()
