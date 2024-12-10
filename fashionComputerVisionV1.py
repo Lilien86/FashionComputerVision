@@ -201,8 +201,8 @@ total_train_time_model_1 = print_train_time(start=train_time_start_on_cpu,
                                            end=train_time_end_on_cpu,
                                            device=str(next(model_1.parameters()).device))
 
-model_1_results = eval_model(model=model_1, data_loader=test_dataloader,
-    loss_fn=loss_fn, accuracy_fn=accuracy_fn,
-    device=device
-)
-print(model_1_results)
+# model_1_results = eval_model(model=model_1, data_loader=test_dataloader,
+#     loss_fn=loss_fn, accuracy_fn=accuracy_fn,
+#     device=device
+# )
+# print(model_1_results)

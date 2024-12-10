@@ -7,7 +7,6 @@ from pathlib import Path
 
 from helper_functions import accuracy_fn
 from helper_functions import print_train_time
-from helper_functions import eval_model
 from timeit import default_timer as timer
 
 from tqdm.auto import tqdm
@@ -34,16 +33,16 @@ image, label = train_data[0]
 class_names = train_data.classes
 
 torch.manual_seed(42)
-# fig = plt.figure(figsize=(9, 9))
-# rows, cols = 4, 4
-# for i in range(1, rows * cols + 1):
-#     random_idx = torch.randint(0, len(train_data), size=[1]).item()
-#     img, label = train_data[random_idx]
-#     fig.add_subplot(rows, cols, i)
-#     plt.imshow(img.squeeze(), cmap="gray")
-#     plt.title(class_names[label])
-#     plt.axis(False)
-# plt.show()
+fig = plt.figure(figsize=(9, 9))
+rows, cols = 4, 4
+for i in range(1, rows * cols + 1):
+    random_idx = torch.randint(0, len(train_data), size=[1]).item()
+    img, label = train_data[random_idx]
+    fig.add_subplot(rows, cols, i)
+    plt.imshow(img.squeeze(), cmap="gray")
+    plt.title(class_names[label])
+    plt.axis(False)
+plt.show()
 
 
 ####################
@@ -64,14 +63,14 @@ test_dataloader = DataLoader(test_data,
 train_features_batch, train_labels_batch = next(iter(train_dataloader))
 print(train_features_batch.shape), print(train_labels_batch.shape)
 
-# random_idx = torch.randint(0, len(train_features_batch), size=[1]).item()
-# img, label = train_features_batch[random_idx], train_labels_batch[random_idx]
-# plt.imshow(img.squeeze(), cmap="gray")
-# plt.title(class_names[label])
-# plt.axis("Off")
-# print(f"Image size: {img.shape}")
-# print(f"Label: {label}, label size: {label.shape}")
-# plt.show()
+random_idx = torch.randint(0, len(train_features_batch), size=[1]).item()
+img, label = train_features_batch[random_idx], train_labels_batch[random_idx]
+plt.imshow(img.squeeze(), cmap="gray")
+plt.title(class_names[label])
+plt.axis("Off")
+print(f"Image size: {img.shape}")
+print(f"Label: {label}, label size: {label.shape}")
+plt.show()
 
 
 ####################
@@ -150,7 +149,7 @@ total_train_time_model_0 = print_train_time(start=train_time_start_on_cpu,
                                            end=train_time_end_on_cpu,
                                            device=str(next(model_0.parameters()).device))
 
-model_0_results = eval_model(model=model_0, data_loader=test_dataloader,
-    loss_fn=loss_fn, accuracy_fn=accuracy_fn
-)
-print(model_0_results)
+# model_0_results = eval_model(model=model_0, data_loader=test_dataloader,
+#     loss_fn=loss_fn, accuracy_fn=accuracy_fn
+# )
+# print(model_0_results)

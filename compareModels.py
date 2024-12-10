@@ -4,6 +4,7 @@ import torchvision
 
 import requests
 from pathlib import Path
+import random
 
 from helper_functions import accuracy_fn
 from helper_functions import print_train_time
@@ -12,6 +13,7 @@ from timeit import default_timer as timer
 from tqdm.auto import tqdm
 import pandas as pd
 
+from pathlib import Path
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader
@@ -233,51 +235,51 @@ def eval_model(model: torch.nn.Module,
             "model_loss": loss.item(),
             "model_acc": acc}
 
-for epoch in tqdm(range(epochs)):
-    print(f"Epoch: {epoch}\n---------")
-    train_step(data_loader=train_dataloader, 
-        model=model_0, 
-        loss_fn=loss_fn,
-        optimizer=optimizer0,
-        accuracy_fn=accuracy_fn
-    )
-    test_step(data_loader=test_dataloader,
-        model=model_0,
-        loss_fn=loss_fn,
-        accuracy_fn=accuracy_fn
-    )
+# for epoch in tqdm(range(epochs)):
+#     print(f"Epoch: {epoch}\n---------")
+#     train_step(data_loader=train_dataloader, 
+#         model=model_0, 
+#         loss_fn=loss_fn,
+#         optimizer=optimizer0,
+#         accuracy_fn=accuracy_fn
+#     )
+#     test_step(data_loader=test_dataloader,
+#         model=model_0,
+#         loss_fn=loss_fn,
+#         accuracy_fn=accuracy_fn
+#     )
 
-total_train_time_model_0 = print_train_time(start=train_time_start_on_cpu, 
-                                           end=timer(),
-                                           device="cpu")
-model_0_results = eval_model(model=model_0, data_loader=test_dataloader,
-    loss_fn=loss_fn, accuracy_fn=accuracy_fn,
-    device=device
-)
-train_time_start_on_cpu = timer()
+# total_train_time_model_0 = print_train_time(start=train_time_start_on_cpu, 
+#                                            end=timer(),
+#                                            device="cpu")
+# model_0_results = eval_model(model=model_0, data_loader=test_dataloader,
+#     loss_fn=loss_fn, accuracy_fn=accuracy_fn,
+#     device=device
+# )
+# train_time_start_on_cpu = timer()
 
-for epoch in tqdm(range(epochs)):
-    print(f"Epoch: {epoch}\n---------")
-    train_step(data_loader=train_dataloader, 
-        model=model_1, 
-        loss_fn=loss_fn,
-        optimizer=optimizer1,
-        accuracy_fn=accuracy_fn
-    )
-    test_step(data_loader=test_dataloader,
-        model=model_1,
-        loss_fn=loss_fn,
-        accuracy_fn=accuracy_fn
-    )
+# for epoch in tqdm(range(epochs)):
+#     print(f"Epoch: {epoch}\n---------")
+#     train_step(data_loader=train_dataloader, 
+#         model=model_1, 
+#         loss_fn=loss_fn,
+#         optimizer=optimizer1,
+#         accuracy_fn=accuracy_fn
+#     )
+#     test_step(data_loader=test_dataloader,
+#         model=model_1,
+#         loss_fn=loss_fn,
+#         accuracy_fn=accuracy_fn
+#     )
 
-total_train_time_model_1 = print_train_time(start=train_time_start_on_cpu, 
-                                           end=timer(),
-                                           device="cpu")
-model_1_results = eval_model(model=model_1, data_loader=test_dataloader,
-    loss_fn=loss_fn, accuracy_fn=accuracy_fn,
-    device=device
-)
-train_time_start_on_cpu = timer()
+# total_train_time_model_1 = print_train_time(start=train_time_start_on_cpu, 
+#                                            end=timer(),
+#                                            device="cpu")
+# model_1_results = eval_model(model=model_1, data_loader=test_dataloader,
+#     loss_fn=loss_fn, accuracy_fn=accuracy_fn,
+#     device=device
+# )
+# train_time_start_on_cpu = timer()
 
 for epoch in tqdm(range(epochs)):
     print(f"Epoch: {epoch}\n---------")
@@ -301,13 +303,71 @@ model_2_results = eval_model(model=model_2, data_loader=test_dataloader,
     device=device
 )
 
-compare_results = pd.DataFrame([model_0_results, model_1_results, model_2_results])
-print(compare_results)
+# compare_results = pd.DataFrame([model_0_results, model_1_results, model_2_results])
+# print(compare_results)
 
-compare_results["training_time"] = [total_train_time_model_0, total_train_time_model_1, total_train_time_model_2]
-print(compare_results)
+# compare_results["training_time"] = [total_train_time_model_0, total_train_time_model_1, total_train_time_model_2]
+# print(compare_results)
 
-compare_results.set_index("model_name")["model_acc"].plot(kind="barh")
-plt.xlabel("accuracy (%)")
-plt.ylabel("model")
+# compare_results.set_index("model_name")["model_acc"].plot(kind="barh")
+# plt.xlabel("accuracy (%)")
+# plt.ylabel("model")
+# plt.show()
+
+test_samples = []
+test_labels = []
+for sample, label in random.sample(list(test_data), k=9):
+    test_samples.append(sample)
+    test_labels.append(label)
+
+
+def make_predictions(model: torch.nn.Module, data: list, device: torch.device = device):
+    pred_probs = []
+    model.eval()
+    with torch.inference_mode():
+        for sample in data:
+            sample = torch.unsqueeze(sample, dim=0).to(device)
+
+            pred_logit = model(sample)
+
+            pred_prob = torch.softmax(pred_logit.squeeze(), dim=0)
+
+            pred_probs.append(pred_prob.cpu())
+            
+    return torch.stack(pred_probs)
+
+pred_probs = make_predictions(model = model_2, data = test_samples)
+print(pred_probs[:2])
+
+pred_classes = pred_probs.argmax(dim=1)
+print(pred_classes)
+
+plt.figure(figsize=(9, 9))
+nrows = 3
+ncols = 3
+for i, sample in enumerate(test_samples):
+  plt.subplot(nrows, ncols, i+1)
+
+  plt.imshow(sample.squeeze(), cmap="gray")
+
+  pred_label = class_names[pred_classes[i]]
+
+  truth_label = class_names[test_labels[i]] 
+
+  title_text = f"Pred: {pred_label} | Truth: {truth_label}"
+  
+  if pred_label == truth_label:
+      plt.title(title_text, fontsize=10, c="g")
+  else:
+      plt.title(title_text, fontsize=10, c="r")
+  plt.axis(False)
 plt.show()
+
+MODEL_PATH = Path("model")
+MODEL_PATH.mkdir(parents=True, exist_ok=True)
+
+MODEL_NAME = "fashion_computer_vision.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
+
+print(f"Saving model to: {MODEL_SAVE_PATH}")
+torch.save(obj=model_2.state_dict(), f=MODEL_SAVE_PATH)
