@@ -1,4 +1,4 @@
-# **FashionMNIST Classification with PyTorch**
+# **FashionMNIST Classification**
 
 This project implements and compares three neural network architectures for classifying the FashionMNIST dataset. Models are trained, evaluated, and visually compared for accuracy and performance.
 
